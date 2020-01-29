@@ -360,8 +360,6 @@ static void init_run(int fd) {
 
 // create a new empty home directory
 static void create_home(void) {
-	assert(init_home == 0);
-
 	// we have a copy of user home directory in RUN_WHITELIST_DIR, open it
 	char *newname;
 	if (asprintf(&newname, "%s%s", RUN_WHITELIST_DIR, cfg.homedir) == -1)
@@ -405,8 +403,10 @@ static void init_tmpfs(const char *dir, int fd) {
 
 	size_t len = strlen(dir);
 	if (strncmp(dir, cfg.homedir, len) == 0) {
-		if (cfg.homedir[len] == '/')
+		if (cfg.homedir[len] == '/') {
+			assert(init_home == 0);
 			create_home();
+		}
 		else if (cfg.homedir[len] != '\0')
 			return;
 
