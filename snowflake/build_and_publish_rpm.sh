@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 #
-# Copyright (c) 2019 Snowflake Computing Inc. All right reserved.
+# Copyright (c) 2020 Snowflake Computing Inc. All right reserved.
 #
 #
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

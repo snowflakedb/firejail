@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 #
-# Copyright (c) 2019 Snowflake Computing Inc. All right reserved.
+# Copyright (c) 2020 Snowflake Computing Inc. All right reserved.
 #
 #
 TARGET_REPO=$1
