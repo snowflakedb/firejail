@@ -1,8 +1,20 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 #
 # Copyright (c) 2020 Snowflake Computing Inc. All right reserved.
 #
 #
+
+function usage()
+{
+    echo "usage: ./build_and_publish_rpm.sh [TARGET_YUM_REPO] [TARGET_HOST_URL]"
+    exit 1
+}
+
+if [ "$#" -ne 2 ]; then
+  usage
+fi
+
+
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $THIS_DIR/version.sh
 TARGET_YUM_REPO=$1
