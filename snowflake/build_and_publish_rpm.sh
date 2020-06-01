@@ -6,7 +6,7 @@
 
 function usage()
 {
-    echo "usage: ./build_and_publish_rpm.sh [TARGET_YUM_REPO] [TARGET_HOST_URL]"
+    echo "usage: ./build_and_publish_rpm.sh [S3_BUCKET_BASE_URL] [PRIVATE_KEY_FILE]"
     exit 1
 }
 
@@ -17,18 +17,8 @@ fi
 
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $THIS_DIR/version.sh
-TARGET_YUM_REPO=$1
-TARGET_HOST_URL=$2
-
-if [[ -z $TARGET_YUM_REPO ]]; then
-  echo "ERROR: {TARGET_YUM_REPO} not specified"
-  exit 1
-fi
-
-if [[ -z $TARGET_HOST_URL ]]; then
-  echo "ERROR: {TARGET_HOST_URL} not specified"
-  exit 1
-fi
+S3_BUCKET_BASE_URL=${1%/}
+PRIVATE_KEY_FILE=$2
 
 $THIS_DIR/../platform/rpm/mkrpm.sh firejail $FIREJAIL_SF_VERSION \
     "--disable-userns --disable-contrib-install --disable-file-transfer --disable-x11 --disable-firetunnel"
@@ -40,4 +30,7 @@ if [[ -z $PACKAGE_NAME ]]; then
   exit 1
 fi
 
-$THIS_DIR/publish_rpm.sh $TARGET_YUM_REPO $TARGET_HOST_URL $PACKAGE_NAME
+openssl dgst -sha256 -sign $PRIVATE_KEY_FILE -out ${PACKAGE_NAME}.sig $PACKAGE_NAME
+
+aws s3 cp $PACKAGE_NAME $S3_BUCKET_BASE_URL/firejail/$FIREJAIL_SF_VERSION/
+aws s3 cp ${PACKAGE_NAME}.sig $S3_BUCKET_BASE_URL/firejail/$FIREJAIL_SF_VERSION/
