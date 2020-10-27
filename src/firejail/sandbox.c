@@ -547,10 +547,13 @@ void start_application(int no_sandbox, FILE *fp) {
 #ifdef HAVE_SECCOMP
 		seccomp_install_filters();
 #endif
-		if (rv)
+		if (rv) {
 			execvp(cfg.original_argv[cfg.original_program_index], &cfg.original_argv[cfg.original_program_index]);
-		else
+			fprintf(stderr, "Error: exec failed: %s\n", strerror(errno));
+		}
+		else {
 			fprintf(stderr, "Error: no suitable %s executable found\n", cfg.original_argv[cfg.original_program_index]);
+		}
 		exit(1);
 	}
 	//****************************************
